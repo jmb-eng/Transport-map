@@ -119,8 +119,8 @@ const legendConfig = [
   { name: "Intracity Routes", type: "line", color: "#81dd2b", weight: 4 },
   
   { name: "Bike Route", type: "line", color: "#556b2f", weight: 2 },
-  { name: "Bus Route", type: "line", color: "#9e0081", weight: 2 },
-
+  //{ name: "Bus Route", type: "line", color: "#9e0081", weight: 2 },
+  //bus route data > 25mb, not loaded in github
 
   { name: "Jeepney Routes", type: "line", color: "#ff4501", weight: 2 },
 

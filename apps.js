@@ -180,7 +180,10 @@ const overlays = new Map();
 Promise.all(
   layerConfig.map(cfg =>
     fetch(cfg.url + "?v=" + Date.now())
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(cfg.url + " failed");
+        return res.json();
+      })
       .then(data => {
         let layer;
 
@@ -201,10 +204,12 @@ Promise.all(
 
         if (cfg.default) layer.addTo(map);
       })
+      .catch(err => {
+        console.error("Layer load error:", cfg.name, err);
+      })
   )
 ).then(() => {
 
-  // 🔒 FIXED ORDER CONTROL
   const ordered = {};
 
   layerConfig.forEach(cfg => {
@@ -214,7 +219,9 @@ Promise.all(
 
   L.control.layers(null, ordered, { collapsed: true }).addTo(map);
 
+  console.log("All layers loaded:", overlays.size);
 });
+
   // ===============================
   // NORTH ARROW
   // ===============================

@@ -365,7 +365,7 @@ north.addTo(map);
         background: rgba(255,255,255,0.8);
         padding: 10px;
         border-radius: 8px;
-        width: 570px;
+        width: 600px;
         max-height: 300px;
         overflow-y: auto;
       ">
@@ -412,7 +412,7 @@ north.addTo(map);
       }
 
       html += `
-        <div style="width:33.33%;margin-bottom:5px;font-size:12px;">
+        <div style="width:25%;margin-bottom:5px;font-size:12px;">
           ${symbol} ${item.name}
         </div>
       `;

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Interactive Transport Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <style>
+   /* ===============================
+       FULL SCREEN MAP
+    =============================== */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
+
+    /* ===============================
+       LEAFLET UI IMPROVEMENTS
+    =============================== */
+    .leaflet-control-layers {
+      font-size: 12px;
+    }
+
+    .leaflet-top.leaflet-right {
+      margin-top: 10px;
+      margin-right: 10px;
+    }
+
+    /* ===============================
+       LEGEND STYLING (OPTIONAL GLOBAL)
+    =============================== */
+    .legend {
+      font-family: Arial, sans-serif;
+      line-height: 1.3;
+    }
+
+    /* Optional: smoother control boxes */
+    .leaflet-control {
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- MAP CONTAINER -->
+  <div id="map"></div>
+
+  <!-- YOUR MAIN JS FILE -->
+  <script src="apps.js"></script>
+
+</body>
+</html>

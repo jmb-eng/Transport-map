@@ -89,41 +89,12 @@ const styles = {
 };
 
 // ===============================
-// LEGEND CONFIG
-// ===============================
-const legendConfig = [
-  { name: "Antipolo–Tikling–Ortigas–SM Megamall", type: "line", color: "#a80000", weight: 5 },
-  { name: "Antipolo–Masinag–Sumulong", type: "line", color: "#ffc401", weight: 5 },
-  { name: "Marcos Hwy-C5-Araneta Cubao", type: "line", color: "#0000ba", weight: 5 },
-  { name: "Intracity Routes", type: "line", color: "#81dd2b", weight: 4 },
-  { name: "Bike Route", type: "line", color: "#556b2f", weight: 2 },
-  { name: "Bus Route", type: "line", color: "#9e0081", weight: 2 },
-  { name: "Jeepney Routes", type: "line", color: "#ff4501", weight: 2 },
-  { name: "PUV Routes", type: "line", color: "#d34245", weight: 3 },
-
-  { name: "LRT 1 Alignment", type: "line", color: "#777777", weight: 2 },
-  { name: "LRT 2 Alignment", type: "line", color: "#bb01ff", weight: 2 },
-  { name: "MRT 3 Alignment", type: "line", color: "#6179b7", weight: 2 },
-  { name: "MRT 4 Alignment", type: "line", color: "#12b800", weight: 2 },
-  { name: "MRT 7 Alignment", type: "line", color: "#9a1a00", weight: 2 },
-
-  { name: "MMSP Alignment", type: "line", color: "#000000", weight: 2, dash: true },
-
-  { name: "LRT 1 Stations", type: "point", color: "#666666", size: 8 },
-  { name: "LRT 2 Stations", type: "point", color: "#560078", size: 8 },
-  { name: "MRT 3 Stations", type: "point", color: "#016bff", size: 8 },
-  { name: "MRT 4 Stations", type: "point", color: "#00680a", size: 8 },
-  { name: "MRT 7 Stations", type: "point", color: "#ff0101", size: 8 }
-];
-
-// ===============================
-// STREET VIEW FUNCTION
+// MAP CLICK → STREET VIEW
 // ===============================
 function openStreetView(lat, lng) {
   if (!lat || !lng) return;
 
   const url = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lng}`;
-  console.log("Opening StreetView:", url);
   window.open(url, "_blank");
 }
 
@@ -182,6 +153,7 @@ Promise.all(
     fetch(cfg.url + "?v=" + Date.now())
       .then(res => res.json())
       .then(data => {
+
         let layer;
 
         if (cfg.type === "line") {
@@ -204,9 +176,10 @@ Promise.all(
   )
 ).then(() => {
 
-  // 🔒 FIXED ORDER CONTROL
+  // ===============================
+  // LAYER CONTROL (SORTED)
+  // ===============================
   const ordered = {};
-
   layerConfig.forEach(cfg => {
     const layer = overlays.get(cfg.name);
     if (layer) ordered[cfg.name] = layer;
@@ -214,7 +187,6 @@ Promise.all(
 
   L.control.layers(null, ordered, { collapsed: true }).addTo(map);
 
-});
   // ===============================
   // NORTH ARROW
   // ===============================
@@ -224,29 +196,9 @@ Promise.all(
     const div = L.DomUtil.create("div");
 
     div.innerHTML = `
-      <div style="
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        background:rgba(255,255,255,0.9);
-        padding:8px;
-        border-radius:8px;
-        box-shadow:0 2px 8px rgba(0,0,0,0.25);
-      ">
-        <div style="
-          width:0;
-          height:0;
-          border-left:10px solid transparent;
-          border-right:10px solid transparent;
-          border-bottom:26px solid black;
-          margin-bottom:6px;
-        "></div>
-        <div style="
-          font-size:14px;
-          font-weight:bold;
-          color:black;
-          letter-spacing:1px;
-        ">N</div>
+      <div style="display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,0.9);padding:8px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.25);">
+        <div style="width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:26px solid black;margin-bottom:6px;"></div>
+        <div style="font-size:14px;font-weight:bold;">N</div>
       </div>
     `;
 
@@ -263,48 +215,22 @@ Promise.all(
   legend.onAdd = function () {
     const div = L.DomUtil.create("div");
 
-    let html = `
-      <div style="background: rgba(255,255,255,0.8); padding: 10px; border-radius: 8px; width: 260px;">
-        <div style="display:flex;flex-wrap:wrap;">
-    `;
+    let html = `<div style="background:white;padding:10px;border-radius:8px;width:260px;display:flex;flex-wrap:wrap;">`;
 
-    legendConfig.forEach(item => {
-      let symbol = "";
-
-      if (item.type === "line") {
-        if (item.dash) {
-          symbol = `<i style="width:20px;border-top:${item.weight}px dashed ${item.color};display:inline-block;margin-right:5px;"></i>`;
-        } else {
-          symbol = `<i style="width:20px;height:${item.weight}px;background:${item.color};display:inline-block;margin-right:5px;"></i>`;
-        }
-      }
-
-      if (item.type === "point") {
-        symbol = `<i style="background:${item.color};width:${item.size}px;height:${item.size}px;display:inline-block;transform:rotate(45deg);margin-right:5px;"></i>`;
-      }
-
-      html += `
-        <div style="width:50%;margin-bottom:5px;font-size:12px;">
-          ${symbol} ${item.name}
-        </div>
-      `;
+    Object.values(layerConfig).forEach(item => {
+      html += `<div style="width:50%;font-size:12px;">${item.name}</div>`;
     });
 
-    html += `
-        </div>
-      </div>
-    `;
-
+    html += `</div>`;
     div.innerHTML = html;
     return div;
   };
 
   legend.addTo(map);
+
 });
 
 // ===============================
-// MAP CLICK → STREET VIEW
+// CLICK → STREET VIEW
 // ===============================
-map.on('click', e => {
-  openStreetView(e.latlng.lat, e.latlng.lng);
-});
+map.on('click', e => openStreetView(e.latlng.lat, e.latlng.lng));

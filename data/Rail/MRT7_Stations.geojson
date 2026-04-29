@@ -1,0 +1,21 @@
+{
+"type": "FeatureCollection",
+"name": "MRT7_Stations",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Name": null, "STATION": "NORTH AVE." }, "geometry": { "type": "Point", "coordinates": [ 121.031583654482048, 14.655199796851258 ] } },
+{ "type": "Feature", "properties": { "Name": null, "STATION": "QUEZON MEMORIAL CIRCLE" }, "geometry": { "type": "Point", "coordinates": [ 121.047628430101867, 14.652249577547321 ] } },
+{ "type": "Feature", "properties": { "Name": null, "STATION": "UNIVERSITY AVE." }, "geometry": { "type": "Point", "coordinates": [ 121.054921940201552, 14.655036772268835 ] } },
+{ "type": "Feature", "properties": { "Name": null, "STATION": "TANDANG SORA" }, "geometry": { "type": "Point", "coordinates": [ 121.067492714262386, 14.663354707906681 ] } },
+{ "type": "Feature", "properties": { "Name": null, "STATION": "DON ANTONIO" }, "geometry": { "type": "Point", "coordinates": [ 121.082621922721458, 14.677020376202258 ] } },
+{ "type": "Feature", "properties": { "Name": null, "STATION": "BATASAN" }, "geometry": { "type": "Point", "coordinates": [ 121.086286820834985, 14.685087990195893 ] } },
+{ "type": "Feature", "properties": { "Name": null, "STATION": "MANGGAHAN" }, "geometry": { "type": "Point", "coordinates": [ 121.087314927572123, 14.697515723319839 ] } },
+{ "type": "Feature", "properties": { "Name": null, "STATION": "DOÑA CARMEN" }, "geometry": { "type": "Point", "coordinates": [ 121.07832122870127, 14.705116876604949 ] } },
+{ "type": "Feature", "properties": { "Name": null, "STATION": "REGALADO" }, "geometry": { "type": "Point", "coordinates": [ 121.068111155981896, 14.70649364561177 ] } },
+{ "type": "Feature", "properties": { "Name": null, "STATION": "MINDANAO AVE." }, "geometry": { "type": "Point", "coordinates": [ 121.061178403554123, 14.732831058026257 ] } },
+{ "type": "Feature", "properties": { "Name": null, "STATION": "SAN JOSE DEL MONTE" }, "geometry": { "type": "Point", "coordinates": [ 121.091926394047888, 14.77392397527213 ] } },
+{ "type": "Feature", "properties": { "Name": null, "STATION": "SACRED HEART" }, "geometry": { "type": "Point", "coordinates": [ 121.080339858105603, 14.74621169571868 ] } },
+{ "type": "Feature", "properties": { "Name": null, "STATION": "TALA" }, "geometry": { "type": "Point", "coordinates": [ 121.086349796414908, 14.759739775700758 ] } },
+{ "type": "Feature", "properties": { "Name": null, "STATION": "QUIRINO" }, "geometry": { "type": "Point", "coordinates": [ 121.069573215645647, 14.735694997107025 ] } }
+]
+}

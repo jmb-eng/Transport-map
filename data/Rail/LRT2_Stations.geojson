@@ -1,0 +1,20 @@
+{
+"type": "FeatureCollection",
+"name": "LRT2_Stations",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Id": 0, "X": 283747.34825099999, "Y": 1615136.4920300001, "Name": "Recto" }, "geometry": { "type": "Point", "coordinates": [ 120.992524047839467, 14.600869953184592 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "X": 285098.43652500003, "Y": 1615220.23162, "Name": "Legarda" }, "geometry": { "type": "Point", "coordinates": [ 121.005053955836871, 14.60173416300375 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "X": 282763.58173899999, "Y": 1615442.3569199999, "Name": "Pureza" }, "geometry": { "type": "Point", "coordinates": [ 120.9833705615453, 14.603554996354696 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "X": 286398.60162500001, "Y": 1615471.454, "Name": "V Mapa" }, "geometry": { "type": "Point", "coordinates": [ 121.017097960844808, 14.604107085793762 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "X": 287369.80904600001, "Y": 1616177.7453300001, "Name": "J Ruiz" }, "geometry": { "type": "Point", "coordinates": [ 121.026053072239293, 14.610565669132882 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "X": 288245.14680599998, "Y": 1616498.46361, "Name": "Gilmore" }, "geometry": { "type": "Point", "coordinates": [ 121.034150059712758, 14.613532361863802 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "X": 289173.42159099999, "Y": 1617045.92383, "Name": "Betty Go Belmonte" }, "geometry": { "type": "Point", "coordinates": [ 121.042720398977863, 14.618551815796003 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "X": 293829.941208, "Y": 1617402.5528, "Name": "Santolan" }, "geometry": { "type": "Point", "coordinates": [ 121.085905453628769, 14.622133394991701 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "X": 290237.56081200001, "Y": 1617493.0399100001, "Name": "Cubao" }, "geometry": { "type": "Point", "coordinates": [ 121.052560002145924, 14.622674806570565 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "X": 291552.31279599998, "Y": 1618074.8542599999, "Name": "Anonas" }, "geometry": { "type": "Point", "coordinates": [ 121.064715145865492, 14.62803393887749 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "X": 292438.59359100001, "Y": 1618405.2578799999, "Name": "Katipunan" }, "geometry": { "type": "Point", "coordinates": [ 121.072914232849371, 14.63108778713729 ] } },
+{ "type": "Feature", "properties": { "Id": null, "X": null, "Y": null, "Name": "Marikina-Pasig" }, "geometry": { "type": "Point", "coordinates": [ 121.100598561956204, 14.620474064373296 ] } },
+{ "type": "Feature", "properties": { "Id": null, "X": null, "Y": null, "Name": "Antipolo" }, "geometry": { "type": "Point", "coordinates": [ 121.121295882456067, 14.624848105293086 ] } }
+]
+}

@@ -233,89 +233,53 @@ function safeGeoJSON(cfg, data) {
 // LOAD LAYERS
 // ===============================
 const overlays = {};
-const BASE_PATH = "./";
-
 let layersControl;
 
 Promise.all(
   layerConfig.map(cfg =>
-    fetch(BASE_PATH + cfg.url)
-      .then(res => {
-        if (!res.ok) throw new Error(cfg.url);
-        return res.json();
-      })
+    fetch(cfg.url)
+      .then(res => res.json())
       .then(data => {
         const layer = safeGeoJSON(cfg, data);
-        if (!layer) return;
-
         overlays[cfg.name] = layer;
 
         if (cfg.default) layer.addTo(map);
       })
-      .catch(err => {
-        console.warn("Missing:", cfg.url);
-      })
   )
 ).then(() => {
-  console.log("All layers processed");
-
-  // ✅ FIX: prevent crash
-  if (Object.keys(overlays).length > 0) {
-    layersControl = L.control.layers(null, overlays).addTo(map);
-  } else {
-    console.warn("No overlays loaded");
-  }
+  layersControl = L.control.layers(null, overlays).addTo(map);
 });
 
-  // ===============================
-  // ✔ ALL / ✖ NONE BUTTONS
-  // ===============================
-  const toggleControl = L.control({ position: "topright" });
+// ===============================
+// ✔ / ✖ CONTROLS (FIXED)
+// ===============================
+const toggleControl = L.control({ position: "topright" });
 
-  toggleControl.onAdd = function () {
-    const div = L.DomUtil.create("div");
+toggleControl.onAdd = function () {
+  const div = L.DomUtil.create("div");
 
-    div.innerHTML = `
-      <div style="
-        background:white;
-        padding:8px;
-        border-radius:6px;
-        box-shadow:0 2px 6px rgba(0,0,0,0.3);
-        font-size:12px;
-        display:flex;
-        gap:5px;
-      ">
-        <button id="checkAllBtn" style="cursor:pointer;">✔ All</button>
-        <button id="uncheckAllBtn" style="cursor:pointer;">✖ None</button>
-      </div>
-    `;
+  div.innerHTML = `
+    <div style="background:white;padding:6px;border-radius:6px;">
+      <button id="checkAllBtn">✔ All</button>
+      <button id="uncheckAllBtn">✖ None</button>
+    </div>
+  `;
 
-    return div;
-  };
+  return div;
+};
 
-  toggleControl.addTo(map);
+toggleControl.addTo(map);
 
-  // prevent map drag when clicking buttons
-  L.DomEvent.disableClickPropagation(toggleControl.getContainer());
+L.DomEvent.disableClickPropagation(toggleControl.getContainer());
 
-  // ===============================
-  // BUTTON LOGIC
-  // ===============================
-  document.addEventListener("click", function (e) {
+document.addEventListener("click", function (e) {
+  if (e.target.id === "checkAllBtn") {
+    Object.values(overlays).forEach(l => map.addLayer(l));
+  }
 
-    if (e.target && e.target.id === "checkAllBtn") {
-      Object.values(overlays).forEach(layer => {
-        if (!map.hasLayer(layer)) map.addLayer(layer);
-      });
-    }
-
-    if (e.target && e.target.id === "uncheckAllBtn") {
-      Object.values(overlays).forEach(layer => {
-        if (map.hasLayer(layer)) map.removeLayer(layer);
-      });
-    }
-  });
-
+  if (e.target.id === "uncheckAllBtn") {
+    Object.values(overlays).forEach(l => map.removeLayer(l));
+  }
 });
 
   // ===============================

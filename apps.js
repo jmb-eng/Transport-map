@@ -86,7 +86,7 @@ const styles = {
   "Marcos Hwy-C5-Araneta Cubao": { color: "#0000ba", weight: 5, opacity: 1 },
 
   "Bike Route": { color: "#556b2f", weight: 0.8, opacity: 0.6 },
-  "Bus Route": { color: "#9e0081", weight: 1, opacity: 0.6 },
+  //"Bus Route": { color: "#9e0081", weight: 1, opacity: 0.6 },
 
   "Intracity Routes": { color: "#81dd2b", weight: 4, opacity: 0.7 },
   "Jeepney Routes": { color: "#ff4501", weight: 1, opacity: 0.6 },
@@ -180,7 +180,7 @@ const layerConfig = [
   { name: "Marcos Hwy-C5-Araneta Cubao", type: "line", url: "data/Routes/MarcosHwy-C5-AranetaCubao.geojson", default: true },
 
   { name: "Bike Route", type: "line", url: "data/Routes/Bicycle_Route.geojson" },
-  { name: "Bus Route", type: "line", url: "data/Routes/Bus_Route.geojson" },
+  //{ name: "Bus Route", type: "line", url: "data/Routes/Bus_Route.geojson" },
 
   { name: "Intracity Routes", type: "line", url: "data/Routes/Intracity_Routes.geojson", default: true },
   { name: "Jeepney Routes", type: "line", url: "data/Routes/Jeepney_Routes.geojson" },

@@ -2,6 +2,9 @@
 // 🗺️ INITIAL MAP
 // ===============================
 console.log("APP STARTED");
+console.log("MAP CONTAINER:", document.getElementById("map"));
+
+console.log("BASE URL:", window.location.href);
 
 const map = L.map('map').setView([14.59, 121.11], 12.5);
 
@@ -205,40 +208,69 @@ const layerConfig = [
 // ===============================
 // LOAD LAYERS
 // ===============================
+const BASE_PATH = "./";
+
+function safeGeoJSON(cfg, data) {
+  try {
+    let layer;
+
+    if (cfg.type === "line") {
+      layer = L.geoJSON(data, {
+        pane: "routesPane",
+        style: () => styles[cfg.name] || { color: "#000", weight: 2 }
+      });
+    }
+
+    if (cfg.type === "point") {
+      layer = L.geoJSON(data, {
+        pane: "stationsPane",
+        pointToLayer: (f, latlng) =>
+          diamondMarker(latlng, styles[cfg.name]?.color || "#000")
+      });
+    }
+
+    return layer;
+
+  } catch (e) {
+    console.error("GeoJSON render error:", cfg.name, e);
+    return null;
+  }
+}
+
 const overlays = {};
 
-Promise.all(layerConfig.map(cfg => {
+Promise.all(
+  layerConfig.map(cfg =>
+    fetch(BASE_PATH + cfg.url)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Missing file: " + cfg.url);
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log("Loaded:", cfg.name);
 
-  return fetch(cfg.url + "?v=" + Date.now())
-    .then(res => res.json())
-    .then(data => {
+        const layer = safeGeoJSON(cfg, data);
+        if (!layer) return;
 
-      let layer;
+        overlays[cfg.name] = layer;
 
-      if (cfg.type === "line") {
-        layer = L.geoJSON(data, {
-          pane: "routesPane",
-          style: () => styles[cfg.name] || { color: "#000", weight: 2 }
-        });
-      }
+        if (cfg.default) {
+          layer.addTo(map);
+        }
+      })
+      .catch(err => {
+        console.error("❌ Load failed:", cfg.name, err.message);
+      })
+  )
+).then(() => {
 
-      if (cfg.type === "point") {
-        layer = L.geoJSON(data, {
-          pane: "stationsPane",
-          pointToLayer: (feature, latlng) =>
-            diamondMarker(latlng, styles[cfg.name]?.color || "#000")
-        });
-      }
-
-      overlays[cfg.name] = layer;
-
-      if (cfg.default) layer.addTo(map);
-
-    });
-
-})).then(() => {
+  console.log("All layers processed");
 
   L.control.layers(null, overlays, { collapsed: true }).addTo(map);
+
+});
 
   // ===============================
   // NORTH ARROW
@@ -357,8 +389,6 @@ north.addTo(map);
   };
 
   legend.addTo(map);
-
-});
 
 // ===============================
 // MAP CLICK (STREET VIEW)

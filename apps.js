@@ -365,7 +365,9 @@ north.addTo(map);
         background: rgba(255,255,255,0.8);
         padding: 10px;
         border-radius: 8px;
-        width: 360px;
+        width: 500px;
+        max-height: 300px;
+        overflow-y: auto;
       ">
       <div style="display:flex;flex-wrap:wrap;">
     `;

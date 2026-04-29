@@ -235,6 +235,8 @@ function safeGeoJSON(cfg, data) {
 const overlays = {};
 const BASE_PATH = "./";
 
+let layersControl;
+
 Promise.all(
   layerConfig.map(cfg =>
     fetch(BASE_PATH + cfg.url)
@@ -259,10 +261,61 @@ Promise.all(
 
   // ✅ FIX: prevent crash
   if (Object.keys(overlays).length > 0) {
-    L.control.layers(null, overlays).addTo(map);
+    layersControl = L.control.layers(null, overlays).addTo(map);
   } else {
     console.warn("No overlays loaded");
   }
+});
+
+  // ===============================
+  // ✔ ALL / ✖ NONE BUTTONS
+  // ===============================
+  const toggleControl = L.control({ position: "topright" });
+
+  toggleControl.onAdd = function () {
+    const div = L.DomUtil.create("div");
+
+    div.innerHTML = `
+      <div style="
+        background:white;
+        padding:8px;
+        border-radius:6px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.3);
+        font-size:12px;
+        display:flex;
+        gap:5px;
+      ">
+        <button id="checkAllBtn" style="cursor:pointer;">✔ All</button>
+        <button id="uncheckAllBtn" style="cursor:pointer;">✖ None</button>
+      </div>
+    `;
+
+    return div;
+  };
+
+  toggleControl.addTo(map);
+
+  // prevent map drag when clicking buttons
+  L.DomEvent.disableClickPropagation(toggleControl.getContainer());
+
+  // ===============================
+  // BUTTON LOGIC
+  // ===============================
+  document.addEventListener("click", function (e) {
+
+    if (e.target && e.target.id === "checkAllBtn") {
+      Object.values(overlays).forEach(layer => {
+        if (!map.hasLayer(layer)) map.addLayer(layer);
+      });
+    }
+
+    if (e.target && e.target.id === "uncheckAllBtn") {
+      Object.values(overlays).forEach(layer => {
+        if (map.hasLayer(layer)) map.removeLayer(layer);
+      });
+    }
+  });
+
 });
 
   // ===============================
@@ -370,7 +423,7 @@ north.addTo(map);
       }
 
       html += `
-        <div style="width:50%;margin-bottom:5px;font-size:12px;">
+        <div style="width:33.33%;margin-bottom:5px;font-size:12px;">
           ${symbol} ${item.name}
         </div>
       `;

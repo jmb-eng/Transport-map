@@ -170,6 +170,7 @@ function diamondMarker(latlng, color) {
   });
 }
 
+
 // ===============================
 // LAYER CONFIG
 // ===============================
@@ -203,73 +204,65 @@ const layerConfig = [
   { name: "MMSP Alignment", type: "line", url: "data/Rail/MMSP_Alignment.geojson" }
 ];
 
-
-
 // ===============================
-// LOAD LAYERS
+// SAFE GEOJSON
 // ===============================
-const BASE_PATH = "./";
-
 function safeGeoJSON(cfg, data) {
   try {
-    let layer;
-
     if (cfg.type === "line") {
-      layer = L.geoJSON(data, {
+      return L.geoJSON(data, {
         pane: "routesPane",
-        style: () => styles[cfg.name] || { color: "#000", weight: 2 }
+        style: () => styles[cfg.name] || { color: "#000" }
       });
     }
 
     if (cfg.type === "point") {
-      layer = L.geoJSON(data, {
+      return L.geoJSON(data, {
         pane: "stationsPane",
         pointToLayer: (f, latlng) =>
           diamondMarker(latlng, styles[cfg.name]?.color || "#000")
       });
     }
 
-    return layer;
-
   } catch (e) {
-    console.error("GeoJSON render error:", cfg.name, e);
-    return null;
+    console.error("GeoJSON error:", cfg.name, e);
   }
 }
 
+// ===============================
+// LOAD LAYERS
+// ===============================
 const overlays = {};
+const BASE_PATH = "./";
 
 Promise.all(
   layerConfig.map(cfg =>
     fetch(BASE_PATH + cfg.url)
       .then(res => {
-        if (!res.ok) {
-          throw new Error("Missing file: " + cfg.url);
-        }
+        if (!res.ok) throw new Error(cfg.url);
         return res.json();
       })
       .then(data => {
-        console.log("Loaded:", cfg.name);
-
         const layer = safeGeoJSON(cfg, data);
         if (!layer) return;
 
         overlays[cfg.name] = layer;
 
-        if (cfg.default) {
-          layer.addTo(map);
-        }
+        if (cfg.default) layer.addTo(map);
       })
       .catch(err => {
-        console.error("❌ Load failed:", cfg.name, err.message);
+        console.warn("Missing:", cfg.url);
       })
   )
 ).then(() => {
-
   console.log("All layers processed");
 
-  L.control.layers(null, overlays, { collapsed: true }).addTo(map);
-
+  // ✅ FIX: prevent crash
+  if (Object.keys(overlays).length > 0) {
+    L.control.layers(null, overlays).addTo(map);
+  } else {
+    console.warn("No overlays loaded");
+  }
 });
 
   // ===============================

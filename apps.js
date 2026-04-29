@@ -230,25 +230,43 @@ function safeGeoJSON(cfg, data) {
 }
 
 // ===============================
-// LOAD LAYERS
+// LOAD LAYERS (FIXED + SAFE)
 // ===============================
 const overlays = {};
 let layersControl;
 
-Promise.all(
-  layerConfig.map(cfg =>
-    fetch(cfg.url)
-      .then(res => res.json())
-      .then(data => {
-        const layer = safeGeoJSON(cfg, data);
-        overlays[cfg.name] = layer;
+function loadLayer(cfg) {
+  return fetch(cfg.url)
+    .then(res => {
+      if (!res.ok) throw new Error("Failed: " + cfg.url);
+      return res.json();
+    })
+    .then(data => {
+      const layer = safeGeoJSON(cfg, data);
+      if (!layer) return null;
 
-        if (cfg.default) layer.addTo(map);
-      })
-  )
-).then(() => {
-  layersControl = L.control.layers(null, overlays).addTo(map);
-});
+      overlays[cfg.name] = layer;
+
+      if (cfg.default) layer.addTo(map);
+
+      return layer;
+    })
+    .catch(err => {
+      console.warn("Missing layer:", cfg.url);
+      return null;
+    });
+}
+
+// run all safely
+Promise.all(layerConfig.map(loadLayer))
+  .then(() => {
+    console.log("All layers processed");
+
+    // ONLY create control AFTER overlays exist
+    layersControl = L.control.layers(null, overlays).addTo(map);
+
+    console.log("Layer control ready");
+  });
 
 // ===============================
 // ✔ / ✖ CONTROLS (FIXED)
@@ -265,20 +283,25 @@ toggleControl.onAdd = function () {
     </div>
   `;
 
+  L.DomEvent.disableClickPropagation(div);
   return div;
 };
 
 toggleControl.addTo(map);
 
-L.DomEvent.disableClickPropagation(toggleControl.getContainer());
-
 document.addEventListener("click", function (e) {
-  if (e.target.id === "checkAllBtn") {
-    Object.values(overlays).forEach(l => map.addLayer(l));
+  if (!overlays) return;
+
+  if (e.target?.id === "checkAllBtn") {
+    Object.values(overlays).forEach(layer => {
+      if (layer && !map.hasLayer(layer)) map.addLayer(layer);
+    });
   }
 
-  if (e.target.id === "uncheckAllBtn") {
-    Object.values(overlays).forEach(l => map.removeLayer(l));
+  if (e.target?.id === "uncheckAllBtn") {
+    Object.values(overlays).forEach(layer => {
+      if (layer && map.hasLayer(layer)) map.removeLayer(layer);
+    });
   }
 });
 

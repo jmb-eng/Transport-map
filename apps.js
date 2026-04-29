@@ -308,3 +308,4 @@ Promise.all(
 map.on('click', e => {
   openStreetView(e.latlng.lat, e.latlng.lng);
 });
+

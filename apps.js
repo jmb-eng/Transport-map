@@ -2,7 +2,7 @@
 // 🗺️ INITIAL MAP
 // ===============================
 console.log("APP STARTED");
-
+console.log("MAP CONTAINER:", document.getElementById("map"));
 const map = L.map('map').setView([14.59, 121.11], 12.5);
 
 // ===============================
@@ -173,43 +173,75 @@ const layerConfig = [
 ];
 
 // ===============================
-// LOAD LAYERS (SAFE)
+// SAFE LOAD LAYERS (DEBUG VERSION)
 // ===============================
 const overlays = {};
 
+function safeGeoJSON(cfg, data) {
+  try {
+    let layer;
+
+    if (cfg.type === "line") {
+      layer = L.geoJSON(data, {
+        pane: "routesPane",
+        style: () => styles[cfg.name] || { color: "#000", weight: 2 }
+      });
+    }
+
+    if (cfg.type === "point") {
+      layer = L.geoJSON(data, {
+        pane: "stationsPane",
+        pointToLayer: (f, latlng) =>
+          diamondMarker(latlng, styles[cfg.name]?.color || "#000")
+      });
+    }
+
+    return layer;
+  } catch (e) {
+    console.error("GeoJSON render error:", cfg.name, e);
+    return null;
+  }
+}
+
 Promise.all(
   layerConfig.map(cfg =>
-    fetch(cfg.url + "?v=" + Date.now())
-      .then(res => res.json())
+    fetch(cfg.url)
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
       .then(data => {
-        let layer;
+        const layer = safeGeoJSON(cfg, data);
 
-        if (cfg.type === "line") {
-          layer = L.geoJSON(data, {
-            pane: "routesPane",
-            style: () => styles[cfg.name] || { color: "#000", weight: 2 }
-          });
-        }
-
-        if (cfg.type === "point") {
-          layer = L.geoJSON(data, {
-            pane: "stationsPane",
-            pointToLayer: (feature, latlng) =>
-              diamondMarker(latlng, styles[cfg.name]?.color || "#000")
-          });
+        if (!layer) {
+          console.warn("Layer skipped:", cfg.name);
+          return;
         }
 
         overlays[cfg.name] = layer;
 
-        if (cfg.default) layer.addTo(map);
+        if (cfg.default) {
+          layer.addTo(map);
+          console.log("Loaded:", cfg.name);
+        }
       })
       .catch(err => {
-        console.error("Failed loading layer:", cfg.name, err);
+        console.error("❌ Failed loading:", cfg.name, cfg.url, err);
       })
   )
 ).then(() => {
 
-  L.control.layers(null, overlays, { collapsed: true }).addTo(map);
+  console.log("All layer attempts finished");
+
+  const baseOverlays = {};
+
+  Object.keys(overlays).forEach(name => {
+    baseOverlays[name] = overlays[name];
+  });
+
+  L.control.layers(null, baseOverlays, { collapsed: true }).addTo(map);
+
+});
 
   // ===============================
   // NORTH ARROW

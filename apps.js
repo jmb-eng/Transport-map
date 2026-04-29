@@ -146,7 +146,7 @@ function diamondMarker(latlng, color) {
 const layerConfig = [
   { name: "Antipolo–Masinag–Sumulong", type: "line", url: "data/Routes/Antipolo-Masinag-Sumulong.geojson", default: true },
   { name: "Antipolo–Tikling–Ortigas–SM Megamall", type: "line", url: "data/Routes/Antipolo-Tikling-Ortigas-SmMegamall.geojson", default: true },
-  { name: "Marcos Hwy-C5-Araneta Cubao", type: "line", url: "data/Routes/MArcosHwy-C5-AranetaCubao.geojson", default: true },
+  { name: "Marcos Hwy-C5-Araneta Cubao", type: "line", url: "data/Routes/MarcosHwy-C5-AranetaCubao.geojson", default: true },
 
   { name: "Bike Route", type: "line", url: "data/Routes/Bicycle_Route.geojson" },
   { name: "Bus Route", type: "line", url: "data/Routes/Bus_Route.geojson" },

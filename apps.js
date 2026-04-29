@@ -175,7 +175,7 @@ const layerConfig = [
 // ===============================
 // LOAD LAYERS (SAFE)
 // ===============================
-const overlays = {};
+const overlays = new Map();
 
 Promise.all(
   layerConfig.map(cfg =>
@@ -189,28 +189,32 @@ Promise.all(
             pane: "routesPane",
             style: () => styles[cfg.name] || { color: "#000", weight: 2 }
           });
-        }
-
-        if (cfg.type === "point") {
+        } else {
           layer = L.geoJSON(data, {
             pane: "stationsPane",
-            pointToLayer: (feature, latlng) =>
+            pointToLayer: (f, latlng) =>
               diamondMarker(latlng, styles[cfg.name]?.color || "#000")
           });
         }
 
-        overlays[cfg.name] = layer;
+        overlays.set(cfg.name, layer);
 
         if (cfg.default) layer.addTo(map);
-      })
-      .catch(err => {
-        console.error("Failed loading layer:", cfg.name, err);
       })
   )
 ).then(() => {
 
-  L.control.layers(null, overlays, { collapsed: true }).addTo(map);
+  // 🔒 FIXED ORDER CONTROL
+  const ordered = {};
 
+  layerConfig.forEach(cfg => {
+    const layer = overlays.get(cfg.name);
+    if (layer) ordered[cfg.name] = layer;
+  });
+
+  L.control.layers(null, ordered, { collapsed: true }).addTo(map);
+
+});
   // ===============================
   // NORTH ARROW
   // ===============================
